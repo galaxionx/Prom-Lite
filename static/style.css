@@ -1,0 +1,543 @@
+/* static/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+:root {
+    --bg-dark: #0a0e17;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --gold: #FFD700;
+    --gold-glow: rgba(255, 215, 0, 0.3);
+    --text-primary: #ffffff;
+    --text-muted: #a0a0a0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    /* Animated subtle gradient background */
+    background-image: radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 20%),
+                      radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 20%);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+/* The Glass Card Effect */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* Buttons */
+.btn-gold {
+    background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+    color: #000;
+    border: none;
+    font-weight: 700;
+    padding: 12px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px var(--gold-glow);
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px var(--gold-glow);
+    color: #000;
+}
+
+.btn-outline-glass {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 50px;
+    padding: 10px 25px;
+    transition: all 0.3s;
+}
+
+.btn-outline-glass:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* Inputs */
+.form-control, .form-select {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 2px var(--gold-glow) !important;
+    border-color: var(--gold) !important;
+}
+
+/* Profile Image container */
+.profile-img-container {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 15px;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.profile-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-dept {
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   FIX FOR TEXT CONTRAST & READABILITY
+   (Paste at the end of static/style.css)
+========================================= */
+
+/* 1. Force base text color to pure white */
+body, .glass-card {
+    color: #ffffff !important;
+}
+
+/* 2. Make "muted" labels much brighter (light gray) */
+.text-muted, .small {
+    color: #e2e8f0 !important; /* A high-contrast light gray */
+    font-weight: 500; /* Make thin text slightly bolder */
+}
+
+/* 3. Make input placeholders visible */
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+    opacity: 1; /* Required for Firefox */
+}
+
+/* 4. Fix dropdown menu options */
+/* Ensures options have a dark background and white text */
+.form-select option {
+    background-color: #0f172a !important; /* Dark navy background */
+    color: #ffffff !important;
+    padding: 10px;
+}
+
+/* 5. Brighten links that aren't buttons */
+a:not(.btn) {
+    color: var(--gold);
+    text-decoration: none;
+}
+a:not(.btn):hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* =========================================
+   PROFESSIONAL BACKGROUND ANIMATION
+   (Paste at the bottom of style.css)
+========================================= */
+
+.floating-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1; /* Ensures it stays behind your content */
+    pointer-events: none; /* Allows you to click through them */
+}
+
+.floating-bg li {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.03); /* Very subtle glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    bottom: -150px; /* Start below screen */
+    
+    /* Animation definition */
+    animation: floatUp 25s linear infinite;
+    
+    /* Icon styling */
+    color: rgba(212, 175, 55, 0.2); /* Faint Gold */
+    font-size: 1.5rem;
+    border-radius: 20%; /* Soft square shape */
+}
+
+/* --- RANDOMIZE THE SHAPES (Size, Position, Speed) --- */
+
+.floating-bg li:nth-child(1) {
+    left: 25%;
+    width: 80px; height: 80px;
+    font-size: 2rem;
+    animation-delay: 0s;
+}
+
+.floating-bg li:nth-child(2) {
+    left: 10%;
+    width: 40px; height: 40px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.floating-bg li:nth-child(3) {
+    left: 70%;
+    width: 20px; height: 20px;
+    animation-delay: 4s;
+    background: rgba(212, 175, 55, 0.1); /* Gold Square */
+}
+
+.floating-bg li:nth-child(4) {
+    left: 40%;
+    width: 60px; height: 60px;
+    font-size: 1.8rem;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.floating-bg li:nth-child(5) {
+    left: 65%;
+    width: 40px; height: 40px;
+    animation-delay: 0s;
+}
+
+.floating-bg li:nth-child(6) {
+    left: 75%;
+    width: 110px; height: 110px;
+    animation-delay: 3s;
+    background: rgba(255, 255, 255, 0.02); /* Big Faint Square */
+}
+
+.floating-bg li:nth-child(7) {
+    left: 35%;
+    width: 50px; height: 50px;
+    animation-delay: 7s;
+    font-size: 1.5rem;
+}
+
+.floating-bg li:nth-child(8) {
+    left: 50%;
+    width: 25px; height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.floating-bg li:nth-child(9) {
+    left: 20%;
+    width: 35px; height: 35px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.floating-bg li:nth-child(10) {
+    left: 85%;
+    width: 150px; height: 150px;
+    font-size: 4rem;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+/* --- THE PHYSICS --- */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+        border-radius: 0;
+    }
+    20% {
+        opacity: 1; /* Fade in */
+    }
+    100% {
+        transform: translateY(-1000px) rotate(720deg); /* Move up and spin */
+        opacity: 0; /* Fade out at top */
+        border-radius: 50%; /* Morph into circle */
+    }
+}
+
+/* =========================================
+   AARIAN'S SIGNATURE (Bottom Right)
+   (Paste at the bottom of style.css)
+========================================= */
+
+.creator-signature {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem; /* Small and subtle */
+    color: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+    z-index: 9999; /* Ensures it sits on top of everything */
+    letter-spacing: 1px;
+    pointer-events: none; /* Allows users to click buttons behind it if needed */
+    text-transform: uppercase;
+    font-weight: 600;
+    
+    /* Optional: Add a subtle glow */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Optional: Make it gold on hover (if you enable pointer-events: auto) */
+.creator-signature span {
+    color: var(--gold);
+}
+
+/* =========================================
+   MOBILE OPTIMIZATION (Phone Screens)
+   (Paste at the bottom of style.css)
+========================================= */
+
+@media (max-width: 768px) {
+    
+    /* 1. Tighter Layout */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* 2. Adjust Profile Cards for Vertical Screens */
+    .profile-img-container {
+        height: 300px; /* Slightly shorter to fit on screen */
+    }
+    
+    /* 3. Make Glass Cards slimmer on mobile */
+    .glass-card {
+        padding: 1.2rem; /* Less padding = more space for content */
+        margin-bottom: 20px;
+    }
+
+    /* 4. Bigger Action Buttons (Thumb Friendly) */
+    .btn-lg, .btn-gold {
+        padding: 12px 20px; /* Larger touch target */
+    }
+    
+    /* Make the Like/Pass buttons massive for easy thumb reach */
+    .d-flex.justify-content-around .btn {
+        transform: scale(1.1); 
+    }
+
+    /* 5. Typography Scaling */
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.5rem; }
+    p, .small { font-size: 0.9rem; }
+
+    /* 6. Chat Optimization */
+    /* Fix chat height so it fits above the keyboard */
+    #chat-box {
+        height: 55vh !important; 
+    }
+    
+    /* 7. Navbar Tweaks */
+    .navbar-brand {
+        font-size: 1.2rem; /* Prevent logo from wrapping */
+    }
+    
+    /* 8. Move "Created by Aarian" to center bottom on mobile */
+    /* This prevents it from blocking the 'Like' button */
+    .creator-signature {
+        bottom: 10px;
+        right: 0;
+        left: 0;
+        text-align: center;
+        font-size: 0.6rem;
+        width: 100%;
+    }
+
+    /* 9. Reduce Background Animation (Performance) */
+    /* Hides half the floating shapes to save battery on phones */
+    .floating-bg li:nth-child(odd) {
+        display: none;
+    }
+}
+
+/* LOADING SPINNER OVERLAY */
+#loading-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 14, 23, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.spinner {
+    width: 50px; height: 50px;
+    border: 5px solid rgba(255, 215, 0, 0.3);
+    border-top: 5px solid #FFD700; /* Gold */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* TOAST NOTIFICATIONS */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10001;
+    width: 90%;
+    max-width: 400px;
+}
+
+.custom-toast {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border-left: 5px solid var(--gold);
+    color: white;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideDown 0.5s ease-out;
+}
+
+.custom-toast.error { border-left-color: #ef4444; }
+.custom-toast.success { border-left-color: #22c55e; }
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* =========================================
+   LANDING PAGE STYLES
+   (Paste at bottom of style.css)
+========================================= */
+
+/* 1. Hero Container - Forces full screen & Centers content */
+.landing-hero {
+    position: fixed; /* Covers everything */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10; /* sits above the floating particles */
+    overflow: hidden;
+}
+
+/* 2. The Moving Blurred Background */
+.animated-bg {
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(10,14,23,0) 50%),
+                radial-gradient(circle, rgba(56,189,248,0.1) 0%, rgba(10,14,23,0) 60%);
+    background-size: 50% 50%;
+    animation: moveBackground 15s linear infinite;
+    z-index: -2;
+}
+
+/* The dark overlay so text is readable */
+.video-bg-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 14, 23, 0.7); /* Darken the background */
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+@keyframes moveBackground {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-50px, -20px) rotate(180deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* 3. Typography */
+.tracking-wide { letter-spacing: 5px; }
+.letter-spacing-2 { letter-spacing: 2px; font-weight: 300; }
+.display-3 {
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+/* 4. Countdown Box Styling */
+.countdown-container {
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+}
+
+.time-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.time-val {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    font-family: 'Playfair Display', serif;
+}
+
+.time-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* 5. Entrance Animation */
+.fade-in-up {
+    animation: fadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float {
+    animation: floatCrown 3s ease-in-out infinite;
+}
+
+@keyframes floatCrown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Mobile Tweak for Landing */
+@media (max-width: 768px) {
+    .display-3 { font-size: 2.5rem; letter-spacing: 2px; }
+    .countdown-container { padding: 1rem; gap: 0.5rem !important; }
+    .time-val { font-size: 1.5rem; }
+    .btn-lg { width: 100%; margin-bottom: 10px; }
+    .d-flex.justify-content-center.gap-3 { flex-direction: column; }
+}

@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-warning"><i class="fas fa-shield-alt me-2"></i> Admin Control</h2>
+        <span class="badge bg-danger p-2">Super Admin Mode</span>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-md-4">
+            <div class="glass-card p-3 text-center border-bottom border-light">
+                <h2 class="fw-bold text-white mb-0">{{ stats.total_users }}</h2>
+                <small class="text-muted">Total Students</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 text-center border-bottom border-success">
+                <h2 class="fw-bold text-white mb-0">{{ stats.matches }}</h2>
+                <small class="text-muted">Like Matches</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4">
+            <div class="glass-card p-3 text-center border-bottom border-warning">
+                <h2 class="fw-bold text-warning mb-0">{{ stats.golden_tickets }}</h2>
+                <small class="text-muted">Prom Dates Set</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6">
+            <div class="glass-card p-3 text-center h-100">
+                <h2 class="fw-bold text-info mb-0">{{ stats.boys }}</h2>
+                <small class="text-muted"><i class="fas fa-male me-1"></i> Boys</small>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="glass-card p-3 text-center h-100">
+                <h2 class="fw-bold text-danger mb-0">{{ stats.girls }}</h2>
+                <small class="text-muted"><i class="fas fa-female me-1"></i> Girls</small>
+            </div>
+        </div>
+    </div>
+
+    {% if reports %}
+    <div class="glass-card p-3 mb-4 border border-danger">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-danger fw-bold m-0"><i class="fas fa-exclamation-triangle me-2"></i> Action Required</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                <thead>
+                    <tr class="text-muted small">
+                        <th>User</th>
+                        <th>Request/Reason</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in reports %}
+                    <tr>
+                        <td class="fw-bold text-white align-middle">
+                            <img src="/static/uploads/{{ item.user.profile_img }}" class="rounded-circle me-2" style="width:30px; height:30px; object-fit:cover;">
+                            {{ item.user.name }}
+                        </td>
+                        <td class="text-warning small align-middle">{{ item.reason }}</td>
+                        <td class="text-end align-middle">
+                            {% if item.reason == "PASSWORD RESET REQUEST" %}
+                                <button class="btn btn-warning btn-sm fw-bold shadow" 
+                                        onclick="openResetModal('{{ item.user.id }}', '{{ item.user.name }}')">
+                                    <i class="fas fa-key"></i> Reset Pwd
+                                </button>
+                            {% else %}
+                                <a href="/ban/{{ item.user.id }}" class="btn btn-danger btn-sm fw-bold shadow" onclick="return confirm('PERMANENTLY BAN this user?');">
+                                    <i class="fas fa-gavel"></i> BAN
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if golden_couples %}
+    <div class="mb-4">
+        <button class="btn btn-outline-glass w-100 text-start d-flex justify-content-between align-items-center p-3 border-warning" 
+                type="button" data-bs-toggle="collapse" data-bs-target="#goldenCollapse" aria-expanded="true"
+                style="background: rgba(255, 215, 0, 0.1);">
+            <span class="text-warning fw-bold"><i class="fas fa-crown me-2"></i> Official Prom Dates (Golden Ticket)</span>
+            <i class="fas fa-chevron-down text-warning"></i>
+        </button>
+        <div class="collapse show" id="goldenCollapse">
+            <div class="glass-card p-0 overflow-hidden mt-2 border-warning">
+                <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th class="ps-4">Sender</th>
+                            <th class="text-center">Status</th>
+                            <th class="pe-4 text-end">Receiver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pair in golden_couples %}
+                        <tr>
+                            <td class="ps-4 align-middle">
+                                <div class="d-flex align-items-center">
+                                    <img src="/static/uploads/{{ pair.sender.profile_img }}" class="rounded-circle me-2 border border-warning" style="width:40px; height:40px; object-fit:cover;">
+                                    <div>
+                                        <div class="fw-bold text-white">{{ pair.sender.name }}</div>
+                                        <small class="text-muted">{{ pair.sender.dept }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                <span class="badge bg-gold text-dark"><i class="fas fa-ticket-alt me-1"></i> DATE CONFIRMED</span>
+                            </td>
+                            <td class="pe-4 align-middle">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="text-end me-2">
+                                        <div class="fw-bold text-white">{{ pair.receiver.name }}</div>
+                                        <small class="text-muted">{{ pair.receiver.dept }}</small>
+                                    </div>
+                                    <img src="/static/uploads/{{ pair.receiver.profile_img }}" class="rounded-circle border border-warning" style="width:40px; height:40px; object-fit:cover;">
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if matches_list %}
+    <div class="mb-4">
+        <button class="btn btn-outline-glass w-100 text-start d-flex justify-content-between align-items-center p-3" 
+                type="button" data-bs-toggle="collapse" data-bs-target="#matchesCollapse" aria-expanded="false">
+            <span class="text-danger fw-bold"><i class="fas fa-heart me-2"></i> Regular Matches</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="collapse" id="matchesCollapse">
+            <div class="glass-card p-0 overflow-hidden mt-2">
+                <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th class="ps-4">Student A</th>
+                            <th class="text-center">Connection</th>
+                            <th class="pe-4 text-end">Student B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pair in matches_list %}
+                        <tr>
+                            <td class="ps-4 align-middle">
+                                <div class="d-flex align-items-center">
+                                    <img src="/static/uploads/{{ pair.u1.profile_img }}" class="rounded-circle me-2" style="width:35px; height:35px; object-fit:cover;">
+                                    <div>
+                                        <div class="fw-bold text-white">{{ pair.u1.name }}</div>
+                                        <small class="text-muted">{{ pair.u1.dept }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                <i class="fas fa-heart text-danger fa-lg animate-float"></i>
+                            </td>
+                            <td class="pe-4 align-middle">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="text-end me-2">
+                                        <div class="fw-bold text-white">{{ pair.u2.name }}</div>
+                                        <small class="text-muted">{{ pair.u2.dept }}</small>
+                                    </div>
+                                    <img src="/static/uploads/{{ pair.u2.profile_img }}" class="rounded-circle" style="width:35px; height:35px; object-fit:cover;">
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mb-4">
+        <button class="btn btn-outline-glass w-100 text-start d-flex justify-content-between align-items-center p-3" 
+                type="button" data-bs-toggle="collapse" data-bs-target="#pendingCollapse" aria-expanded="true">
+            <span class="text-white fw-bold"><i class="fas fa-clock me-2"></i> Pending Verifications <span class="badge bg-warning text-dark ms-2">{{ pending|length }}</span></span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        
+        <div class="collapse show" id="pendingCollapse">
+            <div class="glass-card p-0 overflow-hidden mt-2">
+                <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th class="ps-4">Student</th>
+                            <th>ID Card</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in pending %}
+                        <tr>
+                            <td class="ps-4 align-middle">
+                                <div class="fw-bold">{{ u.name }}</div>
+                                <small class="text-muted">{{ u.dept }}</small>
+                            </td>
+                            <td class="align-middle">
+                                <a href="/static/uploads/{{ u.id_card_img }}" target="_blank" class="text-info text-decoration-none">
+                                    <i class="fas fa-external-link-alt"></i> View ID
+                                </a>
+                            </td>
+                            <td class="text-end pe-4 align-middle">
+                                <a href="/approve/{{ u.id }}" class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i> Accept</a>
+                                <a href="/ban/{{ u.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Reject and Ban this applicant?');"><i class="fas fa-times"></i> Deny</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center py-4 text-muted">No new students waiting.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <button class="btn btn-outline-glass w-100 text-start d-flex justify-content-between align-items-center p-3" 
+                type="button" data-bs-toggle="collapse" data-bs-target="#activeCollapse" aria-expanded="false">
+            <span class="text-white fw-bold"><i class="fas fa-users me-2"></i> Active Students</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <div class="collapse" id="activeCollapse">
+            <div class="glass-card p-0 overflow-hidden mt-2">
+                <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                    <tbody>
+                        {% for u in active %}
+                        <tr style="cursor: pointer;">
+                            <td class="ps-4 align-middle" onclick="viewUser('{{ u.name }}', '{{ u.email }}', '{{ u.dept }}', '{{ u.gender }}', '{{ u.profile_img }}', '{{ u.id_card_img }}')">
+                                <img src="/static/uploads/{{ u.profile_img }}" class="rounded-circle me-3 border border-secondary" style="width:35px; height:35px; object-fit:cover;">
+                                <span class="fw-bold">{{ u.name }}</span>
+                            </td>
+                            <td class="align-middle text-muted small">{{ u.dept }}</td>
+                            <td class="text-end pe-4 align-middle">
+                                
+                                <a href="/chat/{{ u.id }}" class="btn btn-sm btn-outline-warning me-1" title="Message User">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+
+                                <button class="btn btn-sm btn-outline-info me-1" 
+                                        onclick="viewUser('{{ u.name }}', '{{ u.email }}', '{{ u.dept }}', '{{ u.gender }}', '{{ u.profile_img }}', '{{ u.id_card_img }}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <a href="/ban/{{ u.id }}" class="btn btn-sm btn-outline-danger hover-danger" onclick="return confirm('Are you sure you want to BAN {{ u.name }}?');">
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center py-4 text-muted">No active students found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-0" style="background: #1e293b; color: white;">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title fw-bold text-warning">Student Profile</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modal-img" src="" class="rounded-circle border border-warning shadow mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                <h3 id="modal-name" class="fw-bold mb-1"></h3>
+                <span id="modal-dept" class="badge bg-gold text-dark mb-3"></span>
+                
+                <div class="text-start bg-dark p-3 rounded border border-secondary mt-2">
+                    <p class="mb-1"><strong class="text-muted">Email:</strong> <span id="modal-email" class="text-white"></span></p>
+                    <p class="mb-1"><strong class="text-muted">Gender:</strong> <span id="modal-gender" class="text-white"></span></p>
+                    <hr class="border-secondary">
+                    <p class="mb-2"><strong class="text-muted">College ID Card:</strong></p>
+                    <img id="modal-idcard" src="" class="img-fluid rounded border border-secondary">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-0" style="background: #1e293b; color: white;">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title fw-bold text-warning">Reset Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Set a new password for <strong id="reset-username" class="text-info"></strong>.</p>
+                <form action="/admin/reset_password" method="POST">
+                    <input type="hidden" name="user_id" id="reset-userid">
+                    <div class="mb-3">
+                        <label class="small text-muted">New Password</label>
+                        <input type="text" name="new_password" class="form-control" placeholder="Type new password..." required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewUser(name, email, dept, gender, profileImg, idCardImg) {
+        document.getElementById('modal-name').innerText = name;
+        document.getElementById('modal-email').innerText = email;
+        document.getElementById('modal-dept').innerText = dept;
+        document.getElementById('modal-gender').innerText = gender;
+        document.getElementById('modal-img').src = '/static/uploads/' + profileImg;
+        document.getElementById('modal-idcard').src = '/static/uploads/' + idCardImg;
+        
+        var myModal = new bootstrap.Modal(document.getElementById('userModal'));
+        myModal.show();
+    }
+
+    function openResetModal(userId, userName) {
+        document.getElementById('reset-userid').value = userId;
+        document.getElementById('reset-username').innerText = userName;
+        
+        var myModal = new bootstrap.Modal(document.getElementById('resetModal'));
+        myModal.show();
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="d-flex align-items-center mb-5">
+        <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px;">
+            <i class="fas fa-heart text-dark fa-lg"></i>
+        </div>
+        <div class="ms-3">
+            <h2 class="fw-bold mb-0">Your Matches</h2>
+            <p class="text-white-50 mb-0 small">People you liked (or Admins contacting you)</p>
+        </div>
+        
+        <div class="ms-auto">
+            <a href="/" class="btn btn-outline-glass">
+                <i class="fas fa-home me-2"></i> Home
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for user in users %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="glass-card p-3 h-100 text-center position-relative group-hover-effect {{ 'border border-danger' if user.is_admin else '' }}">
+                
+                {% if user.is_admin %}
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-danger text-white rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                        <i class="fas fa-shield-alt me-1"></i> Admin
+                    </span>
+                {% else %}
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-gold text-dark rounded-pill shadow-sm" style="font-size: 0.7rem;">
+                        Match
+                    </span>
+                {% endif %}
+
+                <div class="mb-3 position-relative d-inline-block">
+                    <img src="/static/uploads/{{ user.profile_img }}" 
+                         class="rounded-circle border border-2 {{ 'border-danger' if user.is_admin else 'border-warning' }} shadow" 
+                         style="width: 100px; height: 100px; object-fit: cover;">
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-dark rounded-circle p-2"></span>
+                </div>
+
+                <h5 class="fw-bold mb-1 text-truncate">{{ user.name }}</h5>
+                <p class="small text-muted mb-3">{{ user.dept }}</p>
+
+                <div class="d-grid gap-2">
+                    
+                    <a href="/chat/{{ user.id }}" class="btn btn-sm btn-gold fw-bold">
+                       <i class="fas fa-comments me-1"></i> Chat
+                    </a>
+
+                    {% if not user.is_admin %}
+                        {% if sent_to_id == user.id %}
+                            <button class="btn btn-sm btn-warning text-dark fw-bold disabled" style="opacity: 1; border: 1px solid #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                                <i class="fas fa-ticket-alt me-1"></i> Ticket Sent
+                            </button>
+                        {% elif not sent_to_id %}
+                            <a href="/golden_ticket/send/{{ user.id }}" class="btn btn-sm btn-outline-warning" 
+                               onclick="return confirm('Send your ONE Golden Ticket to {{ user.name }}? This is your official Prom Proposal!');">
+                                <i class="fas fa-ticket-alt me-1"></i> Ask for Prom
+                            </a>
+                        {% endif %}
+                    
+                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#reportModal{{ user.id }}">
+                            Report / Remove
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if not user.is_admin %}
+        <div class="modal fade" id="reportModal{{ user.id }}" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-card border-danger p-0">
+                    <div class="modal-header border-bottom border-secondary">
+                        <h5 class="modal-title text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Report {{ user.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/report/{{ user.id }}" method="POST">
+                        <div class="modal-body text-start">
+                            <p class="small text-white-50 mb-2">Reason for reporting/unmatching:</p>
+                            <textarea name="reason" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="e.g. Rude behavior, Fake profile..." required></textarea>
+                        </div>
+                        <div class="modal-footer border-top border-secondary">
+                            <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-sm btn-danger fw-bold">Submit Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="glass-card d-inline-block px-5 py-5">
+                <i class="fas fa-heart-broken fa-4x text-muted opacity-25 mb-3"></i>
+                <h3 class="text-white-50">No matches yet</h3>
+                <p class="text-muted small">Keep swiping! Your prom date is out there.</p>
+                <a href="/" class="btn btn-gold mt-3">Back to Swipe</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

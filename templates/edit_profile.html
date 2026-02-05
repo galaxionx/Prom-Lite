@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="glass-card position-relative">
+            
+            <a href="/" class="btn btn-sm btn-outline-glass position-absolute top-0 start-0 m-3" title="Back to Home">
+                <i class="fas fa-home"></i>
+            </a>
+
+            <h3 class="text-center fw-bold mb-4 text-warning mt-2">Edit Profile</h3>
+            
+            <form method="POST" enctype="multipart/form-data">
+                
+                <div class="text-center mb-4">
+                    <img src="/static/uploads/{{ user.profile_img }}" class="rounded-circle border border-warning shadow" style="width: 100px; height: 100px; object-fit: cover;">
+                    <div class="mt-2">
+                        <label class="btn btn-sm btn-outline-light">
+                            <i class="fas fa-camera"></i> Change Photo
+                            <input type="file" name="profile_pic" class="d-none">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="small text-muted">Full Name</label>
+                    <input type="text" name="name" class="form-control" value="{{ user.name }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="small text-muted">Bio (Tell us about yourself)</label>
+                    <textarea name="bio" class="form-control" rows="3" placeholder="e.g. Love coffee and coding...">{{ user.bio }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="small text-muted">Hobbies</label>
+                    <input type="text" name="hobbies" class="form-control" value="{{ user.hobbies }}" placeholder="e.g. Guitar, Football, Reading">
+                </div>
+
+                <div class="mb-3">
+                    <label class="small text-muted">Interests (What do you like in a match?)</label>
+                    <input type="text" name="interests" class="form-control" value="{{ user.interests }}" placeholder="e.g. Intelligent conversations, Sci-Fi Movies">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-gold fw-bold">Save Changes</button>
+                    <a href="/" class="btn btn-outline-glass text-muted">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

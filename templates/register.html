@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="glass-card">
+            <h2 class="text-center mb-4"><i class="fas fa-ticket-alt text-warning me-2"></i> Get Your Prom Pass</h2>
+            
+            {% if error %}
+            <div class="alert alert-danger text-center">
+              <i class="fas fa-exclamation-circle me-2"></i> {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-3 border-bottom border-secondary pb-2">Student Details</h5>
+                        
+                        <div class="mb-3">
+                            <label class="small text-muted">Full Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="small text-muted">Age</label>
+                                <input type="number" name="age" class="form-control" min="16" max="30" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Semester</label>
+                                <select name="semester" class="form-select text-white bg-dark">
+                                    <option value="1st">1st</option>
+                                    <option value="2nd">2nd</option>
+                                    <option value="3rd">3rd</option>
+                                    <option value="4th">4th</option>
+                                    <option value="5th">5th</option>
+                                    <option value="6th">6th</option>
+                                    <option value="7th">7th</option>
+                                    <option value="8th">8th</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small text-muted">Gender</label>
+                            <select name="gender" class="form-select text-white bg-dark">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small text-muted">Department</label>
+                            <select name="dept" id="deptSelect" class="form-select text-white bg-dark" onchange="toggleOtherDept()">
+                                <option>CSE</option><option>ECE</option><option>EEE</option>
+                                <option>Civil</option><option>Mech</option><option>BBA/MBA</option>
+                                <option>Physics</option><option>Zoology</option><option>Biotech</option>
+                                <option value="Other">Other (Type below)</option>
+                            </select>
+                            
+                            <div id="otherDeptDiv" style="display:none;" class="mt-2">
+                                <input type="text" name="custom_dept" class="form-control border-warning" placeholder="Type your department here...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        
+                        <h5 class="text-muted mb-3 border-bottom border-secondary pb-2">Security & Verify</h5>
+                        
+                        <div class="mb-3">
+                            <label class="small text-muted">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Confirm Password</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small text-warning">College ID Card (For Admin Check)</label>
+                            <div class="p-3 border border-secondary rounded text-center" style="background: rgba(0,0,0,0.2);">
+                                <i class="fas fa-id-card fa-2x mb-2 text-muted"></i>
+                                <input type="file" name="id_card" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small text-muted">Best Photo (Profile Pic)</label>
+                            <div class="p-3 border border-secondary rounded text-center" style="background: rgba(0,0,0,0.2);">
+                                <i class="fas fa-camera fa-2x mb-2 text-muted"></i>
+                                <input type="file" name="profile_pic" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-gold w-100 py-3 shadow-lg">
+                            COMPLETE REGISTRATION <i class="fas fa-check-circle ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <p class="text-center mt-3 mb-0">Already registered? <a href="/login" class="text-warning">Login here</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleOtherDept() {
+        var select = document.getElementById("deptSelect");
+        var otherDiv = document.getElementById("otherDeptDiv");
+        
+        if (select.value === "Other") {
+            otherDiv.style.display = "block";
+            // Make the text field required if visible
+            document.querySelector('input[name="custom_dept"]').required = true;
+        } else {
+            otherDiv.style.display = "none";
+            document.querySelector('input[name="custom_dept"]').required = false;
+        }
+    }
+</script>
+{% endblock %}

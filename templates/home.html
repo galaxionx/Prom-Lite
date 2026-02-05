@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        
+        <div class="glass-card p-2 mb-3 d-flex justify-content-between align-items-center">
+            <small class="text-white-50 text-uppercase" style="letter-spacing: 1px;">Prom Countdown</small>
+            <div class="d-flex gap-2 text-warning fw-bold font-monospace" id="mini-timer">
+                <span>00d</span> : <span>00h</span> : <span>00m</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+            <div>
+                <small class="text-muted d-block">Logged in as</small>
+                <h5 class="fw-bold m-0">{{ me.name }}</h5>
+            </div>
+            <span class="badge bg-secondary">{{ me.dept }}</span>
+        </div>
+
+        {% if ticket_sender %}
+        <div class="modal fade show" id="ticketModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.8);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-card border-warning text-center position-relative overflow-hidden">
+                    <div class="position-absolute w-100 h-100" style="background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%); pointer-events: none;"></div>
+                    
+                    <div class="modal-body p-4">
+                        <i class="fas fa-ticket-alt text-warning fa-3x mb-3 animate-float"></i>
+                        <h2 class="fw-bold text-white">Golden Ticket!</h2>
+                        <p class="text-white-50">You have received an official Prom Proposal from:</p>
+                        
+                        <div class="my-4">
+                            <img src="/static/uploads/{{ ticket_sender.profile_img }}" class="rounded-circle border border-2 border-warning shadow" style="width: 80px; height: 80px; object-fit: cover;">
+                            <h4 class="mt-2 fw-bold">{{ ticket_sender.name }}</h4>
+                            <span class="badge bg-dark border border-secondary">{{ ticket_sender.dept }}</span>
+                        </div>
+
+                        <p class="small text-white-50">Will you be their Prom Date?</p>
+
+                        <div class="d-grid gap-2">
+                            <a href="/golden_ticket/respond/accept/{{ ticket_sender.id }}" class="btn btn-gold fw-bold shadow-lg">
+                                YES! Accept Date 💖
+                            </a>
+                            <a href="/golden_ticket/respond/reject/{{ ticket_sender.id }}" class="btn btn-outline-glass text-white">
+                                No, return ticket
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if my_date %}
+        <div class="glass-card text-center py-5 border-warning position-relative overflow-hidden">
+            <div class="position-absolute top-0 start-0 w-100 h-100 bg-warning opacity-10" style="z-index: 0;"></div>
+            <div class="position-relative" style="z-index: 1;">
+                <i class="fas fa-crown text-warning fa-3x mb-3"></i>
+                <h2 class="fw-bold text-white">You have a Date!</h2>
+                <p class="text-white-50 mb-4">See you on Feb 16th!</p>
+                
+                <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+                    <img src="/static/uploads/{{ me.profile_img }}" class="rounded-circle border border-warning" style="width: 60px; height: 60px; object-fit: cover;">
+                    <i class="fas fa-heart text-danger"></i>
+                    <img src="/static/uploads/{{ my_date.profile_img }}" class="rounded-circle border border-warning" style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
+                
+                <h4 class="fw-bold">{{ my_date.name }}</h4>
+                <a href="/chat/{{ my_date.id }}" class="btn btn-sm btn-gold mt-3"><i class="fas fa-comments me-1"></i> Chat with Date</a>
+            </div>
+        </div>
+
+        {% elif person %}
+        <div class="glass-card p-0 overflow-hidden position-relative">
+            
+            <button type="button" 
+                    class="position-absolute top-0 end-0 m-3 btn btn-dark bg-opacity-50 text-danger rounded-circle shadow" 
+                    style="width:40px; height:40px; z-index: 10; display:flex; align-items:center; justify-content:center; border: 1px solid rgba(255,0,0,0.3);" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#reportModal"
+                    title="Report User">
+                <i class="fas fa-flag"></i>
+            </button>
+
+            <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content glass-card border-danger p-0">
+                  <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Report User</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <form action="/report/{{ person.id }}" method="POST">
+                      <div class="modal-body">
+                        <p class="small text-white-50 mb-2">Why are you reporting <strong>{{ person.name }}</strong>?</p>
+                        <textarea name="reason" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="e.g. Fake profile, Harassment..." required></textarea>
+                      </div>
+                      <div class="modal-footer border-top border-secondary">
+                        <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-danger fw-bold">Submit Report</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-img-container position-relative">
+                <img src="/static/uploads/{{ person.profile_img }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                
+                <div class="position-absolute bottom-0 start-0 w-100 p-3 pt-5" 
+                     style="background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, rgba(0,0,0,0.6) 50%, transparent);">
+                    
+                    <h2 class="fw-bold text-white mb-1">
+                        {{ person.name }}, <span class="text-warning">{{ person.age }}</span>
+                    </h2>
+                    
+                    <div class="d-flex align-items-center text-white-50">
+                        <span id="dept-icon" class="me-2 text-warning"></span>
+                        <span class="me-2">{{ person.dept }}</span>
+                        <span class="badge bg-light text-dark opacity-75">{{ person.semester }} Sem</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-dark bg-opacity-25 border-top border-secondary">
+                {% if person.bio %}
+                <p class="small text-white mb-3">
+                    <i class="fas fa-quote-left text-warning me-2 opacity-50"></i>{{ person.bio }}
+                </p>
+                {% endif %}
+
+                {% if person.hobbies %}
+                <div class="mb-2">
+                    <small class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase;">Hobbies</small>
+                    {% for hobby in person.hobbies.split(',') %}
+                        {% if hobby.strip() %}
+                        <span class="badge bg-secondary bg-opacity-50 border border-secondary text-light me-1 fw-normal mb-1">{{ hobby.strip() }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if person.interests %}
+                <div>
+                   <small class="text-muted d-block mb-1" style="font-size: 0.7rem; text-transform: uppercase;">Interests</small>
+                   {% for interest in person.interests.split(',') %}
+                        {% if interest.strip() %}
+                        <span class="badge bg-warning bg-opacity-10 border border-warning text-warning me-1 fw-normal mb-1">{{ interest.strip() }}</span>
+                        {% endif %}
+                   {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="p-4 d-flex justify-content-around align-items-center bg-dark bg-opacity-50">
+                <a href="/action/{{ person.id }}/pass" class="btn btn-outline-glass rounded-circle" style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-times fa-lg"></i>
+                </a>
+                
+                <a href="/action/{{ person.id }}/like" class="btn btn-gold rounded-circle shadow" style="width: 70px; height: 70px; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-heart fa-lg"></i>
+                </a>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="glass-card text-center py-5">
+            <div class="mb-3">
+                <i class="fas fa-search fa-3x text-muted opacity-50"></i>
+            </div>
+            <h3>That's Everyone!</h3>
+            <p class="text-muted">You have seen all verified profiles.</p>
+            <a href="/matches" class="btn btn-outline-glass mt-3">View Your Matches</a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. Dept Icon Logic
+        const deptText = "{{ person.dept if person else '' }}".toLowerCase();
+        const iconContainer = document.getElementById("dept-icon");
+        
+        if (iconContainer) {
+            if (deptText.includes("cse") || deptText.includes("computer")) iconContainer.innerHTML = '<i class="fas fa-laptop-code"></i>';
+            else if (deptText.includes("ece") || deptText.includes("electrical")) iconContainer.innerHTML = '<i class="fas fa-bolt"></i>';
+            else if (deptText.includes("civil")) iconContainer.innerHTML = '<i class="fas fa-building"></i>';
+            else if (deptText.includes("bio") || deptText.includes("zoology")) iconContainer.innerHTML = '<i class="fas fa-dna"></i>';
+            else if (deptText.includes("mech")) iconContainer.innerHTML = '<i class="fas fa-cogs"></i>';
+            else if (deptText.includes("phys")) iconContainer.innerHTML = '<i class="fas fa-atom"></i>';
+            else iconContainer.innerHTML = '<i class="fas fa-user-graduate"></i>';
+        }
+
+        // 2. Mini Countdown Timer
+        var countDownDate = new Date("Feb 16, 2026 18:00:00").getTime();
+        var timerInterval = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+            var display = days + "d : " + hours + "h : " + minutes + "m";
+            document.getElementById("mini-timer").innerHTML = display;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.getElementById("mini-timer").innerHTML = "HAPPENING NOW!";
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}

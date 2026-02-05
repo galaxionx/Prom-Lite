@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-4">
+        <div class="glass-card text-center border-danger">
+            <div class="mb-4">
+                <i class="fas fa-user-shield fa-3x text-danger mb-3"></i>
+                <h3 class="fw-bold">Admin Portal</h3>
+                <p class="text-muted small">Restricted Access Only</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3 text-start">
+                    <label class="small text-muted">Admin ID</label>
+                    <input type="text" name="email" class="form-control" style="border-color: #dc3545;" placeholder="admin">
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="small text-muted">Security Key</label>
+                    <input type="password" name="password" class="form-control" style="border-color: #dc3545;" placeholder="••••">
+                </div>
+
+                <button class="btn btn-danger w-100 py-2 fw-bold shadow">
+                    UNLOCK DASHBOARD
+                </button>
+            </form>
+            <a href="/login" class="d-block mt-3 small text-muted">Not an admin? Go back.</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

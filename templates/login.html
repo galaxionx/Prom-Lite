@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="glass-card text-center">
+            <div class="mb-4">
+                <i class="fas fa-gem fa-3x text-warning mb-3"></i>
+                <h2 class="fw-bold">Welcome Back</h2>
+                <p class="text-muted small">Login to find your prom date</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3 text-start">
+                    <label class="form-label text-muted small ms-1">Email or Username</label>
+                    <input type="text" name="email" class="form-control" placeholder="Enter your ID..." required>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="form-label text-muted small ms-1">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div class="text-end mt-1">
+                <a href="/forgot-password" class="small text-warning text-decoration-none">Forgot Password?</a>
+
+                <button class="btn btn-gold w-100 py-3 mb-3">
+                    ENTER <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+            </form>
+
+            <div class="mt-3">
+                <p class="small text-muted">New student? <a href="/register" class="text-warning text-decoration-none">Create Account</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="glass-card p-3 mb-3 d-flex align-items-center justify-content-between sticky-top" style="z-index: 100;">
+            <div class="d-flex align-items-center">
+                <a href="/matches" class="btn btn-sm btn-outline-glass me-2" title="Back to Matches"><i class="fas fa-arrow-left"></i></a>
+                
+                <a href="/" class="btn btn-sm btn-outline-glass me-3" title="Home"><i class="fas fa-home"></i></a>
+                
+                <img src="/static/uploads/{{ partner.profile_img }}" class="rounded-circle border border-warning" style="width: 40px; height: 40px; object-fit: cover;">
+                <div class="ms-3">
+                    <h5 class="mb-0 fw-bold">{{ partner.name }}</h5>
+                    {% if partner.is_admin %}
+                        <small class="text-danger fw-bold"><i class="fas fa-shield-alt"></i> Admin</small>
+                    {% else %}
+                        <small class="text-success"><i class="fas fa-circle" style="font-size: 8px;"></i> Online</small>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if not partner.is_admin %}
+            <button type="button" class="btn btn-sm text-danger opacity-75 hover-opacity-100" 
+                    data-bs-toggle="modal" data-bs-target="#reportModal" title="Report User">
+                <i class="fas fa-flag"></i>
+            </button>
+            {% endif %}
+        </div>
+
+        <div id="chat-box" class="glass-card p-4 mb-3" style="height: 60vh; overflow-y: scroll; display: flex; flex-direction: column;">
+            <div class="text-center text-muted small mt-5">
+                <i class="fas fa-lock"></i> Start of your conversation
+            </div>
+        </div>
+
+        <div class="glass-card p-2 d-flex align-items-center">
+            <input type="text" id="msg-input" class="form-control border-0 bg-transparent text-white" placeholder="Type a message..." style="box-shadow: none;">
+            <button onclick="sendMessage()" class="btn btn-gold rounded-circle ms-2" style="width: 50px; height: 50px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+{% if not partner.is_admin %}
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-danger p-0">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title text-danger fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Report User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/report/{{ partner.id }}" method="POST">
+                <div class="modal-body">
+                    <p class="small text-white-50 mb-2">Why are you reporting {{ partner.name }}?</p>
+                    <textarea name="reason" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="e.g. Harassment, Inappropriate messages..." required></textarea>
+                </div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-danger fw-bold">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    const partnerId = {{ partner.id }};
+    const meId = {{ me_id }};
+    const chatBox = document.getElementById('chat-box');
+
+    // 1. Function to Load Messages
+    function loadMessages() {
+        fetch(`/api/get_messages/${partnerId}`)
+            .then(response => response.json())
+            .then(data => {
+                const currentScroll = chatBox.scrollTop;
+                const isNearBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 100;
+                
+                // Clear current messages (simple way)
+                chatBox.innerHTML = '<div class="text-center text-muted small mb-4">Start of conversation</div>';
+
+                data.forEach(msg => {
+                    const isMe = msg.sender === meId;
+                    const div = document.createElement('div');
+                    div.className = isMe ? "d-flex justify-content-end mb-2" : "d-flex justify-content-start mb-2";
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = isMe ? "bg-warning text-dark p-2 px-3 rounded-3" : "bg-dark border border-secondary text-white p-2 px-3 rounded-3";
+                    bubble.style.maxWidth = "75%";
+                    bubble.innerHTML = `${msg.content} <span style="font-size: 0.6rem; opacity: 0.7; margin-left: 5px;">${msg.time}</span>`;
+                    
+                    div.appendChild(bubble);
+                    chatBox.appendChild(div);
+                });
+
+                if (isNearBottom) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            });
+    }
+
+    // 2. Function to Send Message
+    function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const content = input.value;
+        if (!content) return;
+
+        fetch('/api/send_message', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ receiver_id: partnerId, content: content })
+        }).then(() => {
+            input.value = ''; 
+            loadMessages(); 
+            setTimeout(() => chatBox.scrollTop = chatBox.scrollHeight, 100);
+        });
+    }
+
+    document.getElementById('msg-input').addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    setInterval(loadMessages, 2000);
+    loadMessages();
+</script>
+{% endblock %}
